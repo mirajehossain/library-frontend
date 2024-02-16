@@ -4,6 +4,8 @@ import {IBook} from "../libs/types";
 import {createBook} from "../services/api";
 import {useMutation} from "react-query";
 import {useNavigate} from "react-router-dom";
+import {Console} from "inspector";
+import {AxiosError} from "axios";
 
 const initialState: Partial<IBook> = {
     author: "",
@@ -23,8 +25,11 @@ const CreateBook: React.FC = () => {
             setFormState({ ...initialState });
             alert('Book created successfully');
             navigate('/');
+            setFormState({...initialState});
+
         },
         onError: (error: any) => {
+            console.log({error: error.response})
             alert(`Error creating book: ${error.message}`);
         },
     });
@@ -34,7 +39,6 @@ const CreateBook: React.FC = () => {
         if (isValid) {
             console.log({formState})
             createBookMutation(formState);
-            setFormState({...initialState});
         } else {
             alert('Please fill in all required fields');
         }
@@ -62,7 +66,7 @@ const CreateBook: React.FC = () => {
                                 <Form.Group className="mb-3 " controlId="formTitle">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter title"
+                                        placeholder="Book title"
                                         name="title"
                                         value={formState.title}
                                         onChange={handleInputChange}
@@ -73,7 +77,7 @@ const CreateBook: React.FC = () => {
                                 <Form.Group className="mb-3" controlId="formAuthor">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter author"
+                                        placeholder="Book author"
                                         name="author"
                                         value={formState.author}
                                         onChange={handleInputChange}
@@ -83,7 +87,7 @@ const CreateBook: React.FC = () => {
                                 <Form.Group className="mb-3" controlId="formCategory">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter category"
+                                        placeholder="Book category"
                                         name="category"
                                         value={formState.category}
                                         onChange={handleInputChange}
@@ -97,7 +101,7 @@ const CreateBook: React.FC = () => {
                                 <Form.Group className="mb-3" controlId="formPublication">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter publication"
+                                        placeholder="Book publication"
                                         name="publication"
                                         value={formState.publication}
                                         onChange={handleInputChange}
@@ -107,7 +111,7 @@ const CreateBook: React.FC = () => {
                                 <Form.Group className="mb-3" controlId="formPublicationYear">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter publication year"
+                                        placeholder="Book publication year"
                                         name="publicationYear"
                                         value={formState.publicationYear}
                                         onChange={handleInputChange}
@@ -120,7 +124,7 @@ const CreateBook: React.FC = () => {
                                     <Form.Control
                                         as="textarea"
                                         rows={8}
-                                        placeholder="Enter summary"
+                                        placeholder="Book summary"
                                         name="summary"
                                         value={formState.summary}
                                         onChange={handleInputChange}

@@ -76,7 +76,7 @@ const EditBook: React.FC = () => {
                 <div>
                     <h2>Edit Book</h2>
                     {isLoading && <p className="h-5 text-primary">Loading...</p>}
-                    {isError && <p className="h-4 text-danger ">Error: {error?.message}</p>}
+                    {(isError || isErrorFetchingBookDetails) && <p className="h-4 text-danger ">Error: {error?.message || bookDetailsError?.message}</p>}
 
                     {!isLoading && !isError && !book && (
                         <div className="text-center justify-content-center"><p className="h5 text-danger">Book details not found</p></div>
@@ -87,7 +87,7 @@ const EditBook: React.FC = () => {
                                 <Form.Group className="mb-3 " controlId="formTitle">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter title"
+                                        placeholder="Book title"
                                         name="title"
                                         value={formState?.title}
                                         onChange={handleInputChange}
@@ -98,7 +98,7 @@ const EditBook: React.FC = () => {
                                 <Form.Group className="mb-3" controlId="formAuthor">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter author"
+                                        placeholder="Book author"
                                         name="author"
                                         value={formState?.author}
                                         onChange={handleInputChange}
@@ -108,7 +108,7 @@ const EditBook: React.FC = () => {
                                 <Form.Group className="mb-3" controlId="formCategory">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter category"
+                                        placeholder="Book category"
                                         name="category"
                                         value={formState?.category}
                                         onChange={handleInputChange}
@@ -122,7 +122,7 @@ const EditBook: React.FC = () => {
                                 <Form.Group className="mb-3" controlId="formPublication">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter publication"
+                                        placeholder="Book publication"
                                         name="publication"
                                         value={formState?.publication}
                                         onChange={handleInputChange}
@@ -132,7 +132,7 @@ const EditBook: React.FC = () => {
                                 <Form.Group className="mb-3" controlId="formPublicationYear">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter publication year"
+                                        placeholder="Book publication year"
                                         name="publicationYear"
                                         value={formState?.publicationYear}
                                         onChange={handleInputChange}
@@ -145,7 +145,7 @@ const EditBook: React.FC = () => {
                                     <Form.Control
                                         as="textarea"
                                         rows={8}
-                                        placeholder="Enter summary"
+                                        placeholder="Book summary"
                                         name="summary"
                                         value={formState?.summary}
                                         onChange={handleInputChange}

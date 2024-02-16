@@ -1,17 +1,36 @@
 import React, {useEffect, useState} from 'react';
-import { useQuery } from 'react-query';
+import {useMutation, useQuery} from 'react-query';
 
 import {IBook} from "../libs/types";
-import {getBooks} from "../services/api";
+import {createBook, deleteBook, getBooks} from "../services/api";
 import {Link} from "react-router-dom";
 import {BiDetail} from "@react-icons/all-files/bi/BiDetail";
 import {TiEdit} from "@react-icons/all-files/ti/TiEdit";
 import {BsFillTrash2Fill} from "@react-icons/all-files/bs/BsFillTrash2Fill";
+import DeleteBookDialog from "../components/DeleteDialog";
 
 const BookList: React.FC = () => {
     const [page, setPage] = useState<number>(1);
+    const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+    const [bookId, setBookId] = useState<string>('');
+
+
     const defaultLimit: number = 10;
 
+    const handleDeleteBook = (bookId: string) => {
+        console.log({bookId})
+        deleteBookMutation(bookId);
+        setShowDeleteDialog(false);
+    };
+
+    const {mutate: deleteBookMutation} = useMutation(deleteBook, {
+        onSuccess: () => {
+            refetch();
+        },
+        onError: (error: any) => {
+            alert(`Error creating book: ${error.message}`);
+        },
+    });
     const {
         data: books,
         isLoading,
@@ -62,8 +81,13 @@ const BookList: React.FC = () => {
                                             </Link>
                                             <Link to={`/edit/${book._id}`}><TiEdit className="text-warning h3 me-2" />
                                             </Link>
-                                            <Link to={`/details/${book._id}`}><BsFillTrash2Fill className="text-danger h3 me-2" />
-                                            </Link>
+                                            <a onClick={
+                                                () => {
+                                                    setBookId(book._id);
+                                                    setShowDeleteDialog(true);
+                                                }
+                                            }><BsFillTrash2Fill className="text-danger h3 me-2" />
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -83,6 +107,11 @@ const BookList: React.FC = () => {
                             }}>Next</button></li>
                         </ul>
                     </nav>
+                    <DeleteBookDialog
+                        show={showDeleteDialog}
+                        handleClose={() => setShowDeleteDialog(false)}
+                        handleDelete={()=> {handleDeleteBook(bookId)}}
+                    />
                 </div>
             </div>
         </div>

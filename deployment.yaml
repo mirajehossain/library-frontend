@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: library-client-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: library-client
+  template:
+    metadata:
+      labels:
+        app: library-client
+    spec:
+      containers:
+        - name: library-client
+          image: library-client:1
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REACT_APP_SERVER_HOST
+              value: http://localhost:8000
+
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "512Mi"
+            requests:
+              cpu: "0.2"
+              memory: "256Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: library-service
+spec:
+  selector:
+    app: library-client
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: NodePort

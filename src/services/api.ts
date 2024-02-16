@@ -13,6 +13,17 @@ export const getBooks = async (page = 1, limit = 10): Promise<IBook[]> => {
     }
 }
 
+export const getBook = async (bookId: string | undefined): Promise<IBook> => {
+    try {
+        const apiURL = `${process.env.REACT_APP_SERVER_HOST}/api/v1.0.0/books/${bookId}`
+        const response = await axios.get(apiURL);
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching book:', error);
+        throw error;
+    }
+}
+
 export const createBook = async (payload: Partial<IBook>): Promise<IBook> => {
     try {
         const apiURL = `${process.env.REACT_APP_SERVER_HOST}/api/v1.0.0/books`

@@ -3,6 +3,10 @@ import { useQuery } from 'react-query';
 
 import {IBook} from "../libs/types";
 import {getBooks} from "../services/api";
+import {Link} from "react-router-dom";
+import {BiDetail} from "@react-icons/all-files/bi/BiDetail";
+import {TiEdit} from "@react-icons/all-files/ti/TiEdit";
+import {BsFillTrash2Fill} from "@react-icons/all-files/bs/BsFillTrash2Fill";
 
 const BookList: React.FC = () => {
     const [page, setPage] = useState<number>(1);
@@ -39,7 +43,8 @@ const BookList: React.FC = () => {
                                 <th scope="col">Title</th>
                                 <th scope="col">Author</th>
                                 <th scope="col">Publication</th>
-                                <th scope="col">Publication Year</th>
+                                <th scope="col">Pub Year</th>
+                                <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -51,6 +56,16 @@ const BookList: React.FC = () => {
                                     <td>{book.author}</td>
                                     <td>{book.publication}</td>
                                     <td>{book.publicationYear}</td>
+                                    <td>
+                                        <div>
+                                            <Link to={`/details/${book._id}`}><BiDetail className="text-primary h3 me-2" />
+                                            </Link>
+                                            <Link to={`/details/${book._id}`}><TiEdit className="text-warning h3 me-2" />
+                                            </Link>
+                                            <Link to={`/details/${book._id}`}><BsFillTrash2Fill className="text-danger h3 me-2" />
+                                            </Link>
+                                        </div>
+                                    </td>
                                 </tr>
                             ))}
                             </tbody>

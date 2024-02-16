@@ -32,7 +32,7 @@ const BookDetails: React.FC = () => {
                         <div className="card-body">
                             <h5 className="card-title">Title: {book.title}</h5>
                             <h6 className="card-subtitle mb-2 text-muted">Author: {book.author}</h6>
-                            <p className="card-text">Summary: {book.summary}</p>
+                            <p className="card-text">Summary: {book.summary || 'N/A'}</p>
                             <a href="#" className="card-link">
                                 Publication: {book.publication}
                             </a>

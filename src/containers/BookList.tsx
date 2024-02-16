@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import debounce from 'lodash.debounce';
 
 import { IBook } from '../libs/types';
-import { createBook, deleteBook, getBooks } from '../services/api';
+import { deleteBook, getBooks } from '../services/api';
 import { Link } from 'react-router-dom';
 import { BiDetail } from '@react-icons/all-files/bi/BiDetail';
 import { TiEdit } from '@react-icons/all-files/ti/TiEdit';
@@ -11,6 +12,8 @@ import DeleteBookDialog from '../components/DeleteDialog';
 
 const BookList: React.FC = () => {
     const [page, setPage] = useState<number>(1);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
     const [bookId, setBookId] = useState<string>('');
 
@@ -21,6 +24,9 @@ const BookList: React.FC = () => {
         deleteBookMutation(bookId);
         setShowDeleteDialog(false);
     };
+    const debouncedSearch = debounce(() => {
+        refetch();
+    }, 3000);
 
     const { mutate: deleteBookMutation } = useMutation(deleteBook, {
         onSuccess: () => {
@@ -36,7 +42,7 @@ const BookList: React.FC = () => {
         refetch,
         isError,
         error,
-    } = useQuery<IBook[], Error>(['books', page], () => getBooks(page, defaultLimit));
+    } = useQuery<IBook[], Error>(['books', page], () => getBooks(page, defaultLimit, searchQuery));
 
     useEffect(() => {
         console.log({ page });
@@ -47,6 +53,28 @@ const BookList: React.FC = () => {
             <div className="mt-5">
                 <div>
                     <h2>Book List</h2>
+                    <div className="input-group mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                debouncedSearch();
+                            }}
+                            placeholder="Search by title..."
+                            aria-label="Search by title"
+                            aria-describedby="search-button"
+                        />
+                        <button
+                            className="btn btn-outline-secondary"
+                            type="button"
+                            id="search-button"
+                        >
+                            Search
+                        </button>
+                    </div>
+
                     {isLoading && <p className="h-5 text-primary">Loading...</p>}
                     {isError && <p className="h-4 text-danger ">Error: {error?.message}</p>}
 

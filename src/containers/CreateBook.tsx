@@ -4,8 +4,6 @@ import { IBook } from '../libs/types';
 import { createBook } from '../services/api';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { Console } from 'inspector';
-import { AxiosError } from 'axios';
 
 const initialState: Partial<IBook> = {
     author: '',

@@ -2,9 +2,9 @@ import axios from 'axios';
 
 import { IBook } from '../libs/types';
 
-export const getBooks = async (page = 1, limit = 10): Promise<IBook[]> => {
+export const getBooks = async (page = 1, limit = 10, searchQuery = ''): Promise<IBook[]> => {
     try {
-        const apiURL = `${process.env.REACT_APP_SERVER_HOST}/api/v1.0.0/books?page=${page}&limit=${limit}`;
+        const apiURL = `${process.env.REACT_APP_SERVER_HOST}/api/v1.0.0/books?page=${page}&limit=${limit}&search=${searchQuery}`;
         const response = await axios.get(apiURL);
         return response.data.data;
     } catch (error: any) {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import {useMutation, useQuery} from "react-query";
-import {IBook} from "../libs/types";
-import {createBook, deleteBook, getBook} from "../services/api";
+import { useMutation, useQuery } from 'react-query';
+import { IBook } from '../libs/types';
+import { createBook, deleteBook, getBook } from '../services/api';
 
 interface DeleteBookDialogProps {
     show: boolean;
@@ -10,8 +10,7 @@ interface DeleteBookDialogProps {
     handleDelete: () => void;
 }
 
-const DeleteBookDialog: React.FC<DeleteBookDialogProps> = ({ show, handleClose, handleDelete, }) => {
-
+const DeleteBookDialog: React.FC<DeleteBookDialogProps> = ({ show, handleClose, handleDelete }) => {
     return (
         <Modal show={show} onHide={handleClose} centered>
             <Modal.Header closeButton>

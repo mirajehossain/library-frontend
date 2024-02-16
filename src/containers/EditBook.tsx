@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Col, Form, Row} from 'react-bootstrap';
-import {IBook} from "../libs/types";
-import { getBook, updateBook} from "../services/api";
-import {useMutation, useQuery} from "react-query";
-import {useParams,useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Button, Col, Form, Row } from 'react-bootstrap';
+import { IBook } from '../libs/types';
+import { getBook, updateBook } from '../services/api';
+import { useMutation, useQuery } from 'react-query';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const EditBook: React.FC = () => {
-
     const [formState, setFormState] = useState<Partial<IBook>>();
 
     const { bookId } = useParams<{ bookId: string }>();
@@ -15,7 +14,7 @@ const EditBook: React.FC = () => {
         data: bookDetails,
         isError: isErrorFetchingBookDetails,
         error: bookDetailsError,
-        refetch
+        refetch,
     } = useQuery<IBook, Error>(['book', bookId], () => getBook(bookId));
 
     const {
@@ -24,51 +23,50 @@ const EditBook: React.FC = () => {
         isError,
         error,
     } = useQuery<IBook, Error>(['book', bookId], () => getBook(bookId));
-    const {mutate: updateBookMutation} = useMutation((params: any) => updateBook(params.bookId, params.payload), {
-        onSuccess: () => {
-            refetch()
-            alert('Book updated successfully');
-            navigate(`/details/${bookId}`);
+    const { mutate: updateBookMutation } = useMutation(
+        (params: any) => updateBook(params.bookId, params.payload),
+        {
+            onSuccess: () => {
+                refetch();
+                alert('Book updated successfully');
+                navigate(`/details/${bookId}`);
+            },
+            onError: (error: any) => {
+                alert(`Error updating book: ${error.message}`);
+            },
         },
-        onError: (error: any) => {
-            alert(`Error updating book: ${error.message}`);
-        },
-    });
+    );
 
     useEffect(() => {
-
         const initialState: Partial<IBook> = {
-            title: bookDetails?.title ?? "",
+            title: bookDetails?.title ?? '',
             author: bookDetails?.author,
             category: bookDetails?.category,
             publication: bookDetails?.publication,
             publicationYear: bookDetails?.publicationYear,
             summary: bookDetails?.summary,
-        }
+        };
         setFormState({ ...initialState });
-
     }, [bookDetails]);
-    const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>): void  => {
+    const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        let isValid = formState?.title && formState?.author && formState?.publication && formState?.category;
+        let isValid =
+            formState?.title && formState?.author && formState?.publication && formState?.category;
         if (isValid) {
-            console.log({formState})
-            updateBookMutation({bookId: bookDetails?._id, payload: formState});
+            console.log({ formState });
+            updateBookMutation({ bookId: bookDetails?._id, payload: formState });
         } else {
             alert('Please fill in all required fields');
         }
-
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
-        console.log({name, value})
+        console.log({ name, value });
         setFormState({ ...formState, [name]: value });
     };
 
-    useEffect(() => {
-    }, []);
-
+    useEffect(() => {}, []);
 
     return (
         <div className="container">
@@ -76,10 +74,16 @@ const EditBook: React.FC = () => {
                 <div>
                     <h2>Edit Book</h2>
                     {isLoading && <p className="h-5 text-primary">Loading...</p>}
-                    {(isError || isErrorFetchingBookDetails) && <p className="h-4 text-danger ">Error: {error?.message || bookDetailsError?.message}</p>}
+                    {(isError || isErrorFetchingBookDetails) && (
+                        <p className="h-4 text-danger ">
+                            Error: {error?.message || bookDetailsError?.message}
+                        </p>
+                    )}
 
                     {!isLoading && !isError && !book && (
-                        <div className="text-center justify-content-center"><p className="h5 text-danger">Book details not found</p></div>
+                        <div className="text-center justify-content-center">
+                            <p className="h5 text-danger">Book details not found</p>
+                        </div>
                     )}
                     <Form className="" onSubmit={handleSubmit}>
                         <Row>
@@ -115,7 +119,6 @@ const EditBook: React.FC = () => {
                                         required
                                     />
                                 </Form.Group>
-
                             </Col>
 
                             <Col md={6}>

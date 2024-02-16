@@ -1,29 +1,28 @@
-import React, {useEffect, useState} from 'react';
-import {useMutation, useQuery} from 'react-query';
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 
-import {IBook} from "../libs/types";
-import {createBook, deleteBook, getBooks} from "../services/api";
-import {Link} from "react-router-dom";
-import {BiDetail} from "@react-icons/all-files/bi/BiDetail";
-import {TiEdit} from "@react-icons/all-files/ti/TiEdit";
-import {BsFillTrash2Fill} from "@react-icons/all-files/bs/BsFillTrash2Fill";
-import DeleteBookDialog from "../components/DeleteDialog";
+import { IBook } from '../libs/types';
+import { createBook, deleteBook, getBooks } from '../services/api';
+import { Link } from 'react-router-dom';
+import { BiDetail } from '@react-icons/all-files/bi/BiDetail';
+import { TiEdit } from '@react-icons/all-files/ti/TiEdit';
+import { BsFillTrash2Fill } from '@react-icons/all-files/bs/BsFillTrash2Fill';
+import DeleteBookDialog from '../components/DeleteDialog';
 
 const BookList: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
     const [bookId, setBookId] = useState<string>('');
 
-
     const defaultLimit: number = 10;
 
     const handleDeleteBook = (bookId: string) => {
-        console.log({bookId})
+        console.log({ bookId });
         deleteBookMutation(bookId);
         setShowDeleteDialog(false);
     };
 
-    const {mutate: deleteBookMutation} = useMutation(deleteBook, {
+    const { mutate: deleteBookMutation } = useMutation(deleteBook, {
         onSuccess: () => {
             refetch();
         },
@@ -36,11 +35,11 @@ const BookList: React.FC = () => {
         isLoading,
         refetch,
         isError,
-        error
+        error,
     } = useQuery<IBook[], Error>(['books', page], () => getBooks(page, defaultLimit));
 
     useEffect(() => {
-        console.log({page});
+        console.log({ page });
     }, [page]);
 
     return (
@@ -52,65 +51,88 @@ const BookList: React.FC = () => {
                     {isError && <p className="h-4 text-danger ">Error: {error?.message}</p>}
 
                     {!isLoading && !isError && !books?.length && (
-                        <div className="text-center justify-content-center"><p className="h5 text-danger">No books available</p></div>
+                        <div className="text-center justify-content-center">
+                            <p className="h5 text-danger">No books available</p>
+                        </div>
                     )}
 
-                    {!isLoading && !isError &&  !!books?.length && (<>
-                        <table className="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Title</th>
-                                <th scope="col">Author</th>
-                                <th scope="col">Publication</th>
-                                <th scope="col">Pub Year</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-
-                            {books?.map((book: IBook) => (
-                                <tr key={book._id}>
-                                    <td>{book.title}</td>
-                                    <td>{book.author}</td>
-                                    <td>{book.publication}</td>
-                                    <td>{book.publicationYear}</td>
-                                    <td>
-                                        <div>
-                                            <Link to={`/details/${book._id}`}><BiDetail className="text-primary h3 me-2" />
-                                            </Link>
-                                            <Link to={`/edit/${book._id}`}><TiEdit className="text-warning h3 me-2" />
-                                            </Link>
-                                            <a onClick={
-                                                () => {
-                                                    setBookId(book._id);
-                                                    setShowDeleteDialog(true);
-                                                }
-                                            }><BsFillTrash2Fill className="text-danger h3 me-2" />
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </>)}
+                    {!isLoading && !isError && !!books?.length && (
+                        <>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Author</th>
+                                        <th scope="col">Publication</th>
+                                        <th scope="col">Pub Year</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {books?.map((book: IBook) => (
+                                        <tr key={book._id}>
+                                            <td>{book.title}</td>
+                                            <td>{book.author}</td>
+                                            <td>{book.publication}</td>
+                                            <td>{book.publicationYear}</td>
+                                            <td>
+                                                <div>
+                                                    <Link to={`/details/${book._id}`}>
+                                                        <BiDetail className="text-primary h3 me-2" />
+                                                    </Link>
+                                                    <Link to={`/edit/${book._id}`}>
+                                                        <TiEdit className="text-warning h3 me-2" />
+                                                    </Link>
+                                                    <a
+                                                        onClick={() => {
+                                                            setBookId(book._id);
+                                                            setShowDeleteDialog(true);
+                                                        }}
+                                                    >
+                                                        <BsFillTrash2Fill className="text-danger h3 me-2" />
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </>
+                    )}
                     <nav aria-label="Page navigation example">
                         <ul className="mt-2 pagination justify-content-center">
-                            <li className="page-item"><button disabled={ page < 2} className="page-link" onClick={()=>{
-                                setPage(page - 1);
-                                refetch();
-                            }}>Previous</button></li>
-                            <li className="page-item"><button disabled={ !books?.length} className="page-link" onClick={()=>{
-                                setPage(page + 1);
-                                refetch();
-                            }}>Next</button></li>
+                            <li className="page-item">
+                                <button
+                                    disabled={page < 2}
+                                    className="page-link"
+                                    onClick={() => {
+                                        setPage(page - 1);
+                                        refetch();
+                                    }}
+                                >
+                                    Previous
+                                </button>
+                            </li>
+                            <li className="page-item">
+                                <button
+                                    disabled={!books?.length}
+                                    className="page-link"
+                                    onClick={() => {
+                                        setPage(page + 1);
+                                        refetch();
+                                    }}
+                                >
+                                    Next
+                                </button>
+                            </li>
                         </ul>
                     </nav>
                     <DeleteBookDialog
                         show={showDeleteDialog}
                         handleClose={() => setShowDeleteDialog(false)}
-                        handleDelete={()=> {handleDeleteBook(bookId)}}
+                        handleDelete={() => {
+                            handleDeleteBook(bookId);
+                        }}
                     />
                 </div>
             </div>

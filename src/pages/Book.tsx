@@ -1,7 +1,7 @@
-import React, { useState} from 'react';
-import { Button} from 'react-bootstrap';
-import BookList from "../containers/BookList";
-import CreateBook from "../containers/CreateBook";
+import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
+import BookList from '../containers/BookList';
+import CreateBook from '../containers/CreateBook';
 
 const BookComponent: React.FC = () => {
     const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
@@ -26,9 +26,7 @@ const BookComponent: React.FC = () => {
                     </Button>
                 </div>
 
-                {showCreateForm ? (
-                    <CreateBook/>
-                ) : <BookList/>}
+                {showCreateForm ? <CreateBook /> : <BookList />}
             </div>
         </div>
     );

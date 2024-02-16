@@ -1,59 +1,56 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Col, Form, Row} from 'react-bootstrap';
-import {IBook} from "../libs/types";
-import {createBook} from "../services/api";
-import {useMutation} from "react-query";
-import {useNavigate} from "react-router-dom";
-import {Console} from "inspector";
-import {AxiosError} from "axios";
+import React, { useEffect, useState } from 'react';
+import { Button, Col, Form, Row } from 'react-bootstrap';
+import { IBook } from '../libs/types';
+import { createBook } from '../services/api';
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { Console } from 'inspector';
+import { AxiosError } from 'axios';
 
 const initialState: Partial<IBook> = {
-    author: "",
-    category: "",
-    publication: "",
-    publicationYear: "",
-    summary: "",
-    title: "",
-}
+    author: '',
+    category: '',
+    publication: '',
+    publicationYear: '',
+    summary: '',
+    title: '',
+};
 
 const CreateBook: React.FC = () => {
-    const [formState, setFormState] = useState<Partial<IBook>>({...initialState});
+    const [formState, setFormState] = useState<Partial<IBook>>({ ...initialState });
     const navigate = useNavigate();
 
-    const {mutate: createBookMutation} = useMutation(createBook, {
+    const { mutate: createBookMutation } = useMutation(createBook, {
         onSuccess: () => {
             setFormState({ ...initialState });
             alert('Book created successfully');
             navigate('/');
-            setFormState({...initialState});
-
+            setFormState({ ...initialState });
         },
         onError: (error: any) => {
-            console.log({error: error.response})
+            console.log({ error: error.response });
             alert(`Error creating book: ${error.message}`);
         },
     });
-    const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>): void  => {
+    const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        let isValid = formState.title && formState.author && formState.publication && formState.category;
+        let isValid =
+            formState.title && formState.author && formState.publication && formState.category;
         if (isValid) {
-            console.log({formState})
+            console.log({ formState });
             createBookMutation(formState);
         } else {
             alert('Please fill in all required fields');
         }
-
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
-        console.log({name, value})
+        console.log({ name, value });
         setFormState({ ...formState, [name]: value });
     };
 
-    useEffect(() => {
-    }, []);
-
+    useEffect(() => {}, []);
 
     return (
         <div className="container">
@@ -94,7 +91,6 @@ const CreateBook: React.FC = () => {
                                         required
                                     />
                                 </Form.Group>
-
                             </Col>
 
                             <Col md={6}>

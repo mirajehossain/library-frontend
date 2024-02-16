@@ -1,40 +1,59 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Col, Form, Row} from 'react-bootstrap';
 import {IBook} from "../libs/types";
-import {createBook} from "../services/api";
-import {useMutation} from "react-query";
-import {useNavigate} from "react-router-dom";
+import { getBook, updateBook} from "../services/api";
+import {useMutation, useQuery} from "react-query";
+import {useParams,useNavigate} from "react-router-dom";
 
-const initialState: Partial<IBook> = {
-    author: "",
-    category: "",
-    publication: "",
-    publicationYear: "",
-    summary: "",
-    title: "",
-}
+const EditBook: React.FC = () => {
 
-const CreateBook: React.FC = () => {
-    const [formState, setFormState] = useState<Partial<IBook>>({...initialState});
+    const [formState, setFormState] = useState<Partial<IBook>>();
+
+    const { bookId } = useParams<{ bookId: string }>();
     const navigate = useNavigate();
+    const {
+        data: bookDetails,
+        isError: isErrorFetchingBookDetails,
+        error: bookDetailsError,
+        refetch
+    } = useQuery<IBook, Error>(['book', bookId], () => getBook(bookId));
 
-    const {mutate: createBookMutation} = useMutation(createBook, {
+    const {
+        data: book,
+        isLoading,
+        isError,
+        error,
+    } = useQuery<IBook, Error>(['book', bookId], () => getBook(bookId));
+    const {mutate: updateBookMutation} = useMutation((params: any) => updateBook(params.bookId, params.payload), {
         onSuccess: () => {
-            setFormState({ ...initialState });
-            alert('Book created successfully');
-            navigate('/');
+            refetch()
+            alert('Book updated successfully');
+            navigate(`/details/${bookId}`);
         },
         onError: (error: any) => {
-            alert(`Error creating book: ${error.message}`);
+            alert(`Error updating book: ${error.message}`);
         },
     });
+
+    useEffect(() => {
+
+        const initialState: Partial<IBook> = {
+            title: bookDetails?.title ?? "",
+            author: bookDetails?.author,
+            category: bookDetails?.category,
+            publication: bookDetails?.publication,
+            publicationYear: bookDetails?.publicationYear,
+            summary: bookDetails?.summary,
+        }
+        setFormState({ ...initialState });
+
+    }, [bookDetails]);
     const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>): void  => {
         e.preventDefault();
-        let isValid = formState.title && formState.author && formState.publication && formState.category;
+        let isValid = formState?.title && formState?.author && formState?.publication && formState?.category;
         if (isValid) {
             console.log({formState})
-            createBookMutation(formState);
-            setFormState({...initialState});
+            updateBookMutation({bookId: bookDetails?._id, payload: formState});
         } else {
             alert('Please fill in all required fields');
         }
@@ -55,7 +74,13 @@ const CreateBook: React.FC = () => {
         <div className="container">
             <div className="mt-5">
                 <div>
-                    <h2>Create Book</h2>
+                    <h2>Edit Book</h2>
+                    {isLoading && <p className="h-5 text-primary">Loading...</p>}
+                    {isError && <p className="h-4 text-danger ">Error: {error?.message}</p>}
+
+                    {!isLoading && !isError && !book && (
+                        <div className="text-center justify-content-center"><p className="h5 text-danger">Book details not found</p></div>
+                    )}
                     <Form className="" onSubmit={handleSubmit}>
                         <Row>
                             <Col md={6}>
@@ -64,7 +89,7 @@ const CreateBook: React.FC = () => {
                                         type="text"
                                         placeholder="Enter title"
                                         name="title"
-                                        value={formState.title}
+                                        value={formState?.title}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -75,7 +100,7 @@ const CreateBook: React.FC = () => {
                                         type="text"
                                         placeholder="Enter author"
                                         name="author"
-                                        value={formState.author}
+                                        value={formState?.author}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -85,7 +110,7 @@ const CreateBook: React.FC = () => {
                                         type="text"
                                         placeholder="Enter category"
                                         name="category"
-                                        value={formState.category}
+                                        value={formState?.category}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -99,7 +124,7 @@ const CreateBook: React.FC = () => {
                                         type="text"
                                         placeholder="Enter publication"
                                         name="publication"
-                                        value={formState.publication}
+                                        value={formState?.publication}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -109,7 +134,7 @@ const CreateBook: React.FC = () => {
                                         type="text"
                                         placeholder="Enter publication year"
                                         name="publicationYear"
-                                        value={formState.publicationYear}
+                                        value={formState?.publicationYear}
                                         onChange={handleInputChange}
                                         required
                                     />
@@ -122,7 +147,7 @@ const CreateBook: React.FC = () => {
                                         rows={8}
                                         placeholder="Enter summary"
                                         name="summary"
-                                        value={formState.summary}
+                                        value={formState?.summary}
                                         onChange={handleInputChange}
                                     />
                                 </Form.Group>
@@ -139,4 +164,4 @@ const CreateBook: React.FC = () => {
     );
 };
 
-export default CreateBook;
+export default EditBook;

@@ -34,7 +34,21 @@ export const createBook = async (payload: Partial<IBook>): Promise<IBook> => {
         });
         return response.data.data;
     } catch (error) {
-        console.error('Error creating books:', error);
+        console.error('Error creating book:', error);
+        throw error;
+    }
+}
+export const updateBook = async (bookId: string | undefined, payload: Partial<IBook>): Promise<IBook> => {
+    try {
+        const apiURL = `${process.env.REACT_APP_SERVER_HOST}/api/v1.0.0/books/${bookId}`
+        const response = await axios.patch(apiURL,  payload,{
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error('Error updating book:', error);
         throw error;
     }
 }

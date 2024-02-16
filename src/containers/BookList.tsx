@@ -60,7 +60,7 @@ const BookList: React.FC = () => {
                                         <div>
                                             <Link to={`/details/${book._id}`}><BiDetail className="text-primary h3 me-2" />
                                             </Link>
-                                            <Link to={`/details/${book._id}`}><TiEdit className="text-warning h3 me-2" />
+                                            <Link to={`/edit/${book._id}`}><TiEdit className="text-warning h3 me-2" />
                                             </Link>
                                             <Link to={`/details/${book._id}`}><BsFillTrash2Fill className="text-danger h3 me-2" />
                                             </Link>

@@ -6,6 +6,7 @@ import BookList from "./containers/BookList";
 import CreateBook from "./containers/CreateBook";
 import HeaderComponent from "./components/header";
 import BookDetails from "./containers/BookDetails";
+import EditBook from "./containers/EditBook";
 
 
 
@@ -19,6 +20,7 @@ function App() {
                       <Route path="/" Component={BookList} />
                       <Route  path="/create" Component={CreateBook} />
                       <Route  path="/details/:bookId" Component={BookDetails} />
+                      <Route  path="/edit/:bookId" Component={EditBook} />
                   </Routes>
               </div>
           </div>

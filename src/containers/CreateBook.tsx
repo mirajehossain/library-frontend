@@ -26,7 +26,6 @@ const CreateBook: React.FC = () => {
             setFormState({ ...initialState });
         },
         onError: (error: any) => {
-            console.log({ error: error.response });
             alert(`Error creating book: ${error.message}`);
         },
     });
@@ -35,7 +34,6 @@ const CreateBook: React.FC = () => {
         let isValid =
             formState.title && formState.author && formState.publication && formState.category;
         if (isValid) {
-            console.log({ formState });
             createBookMutation(formState);
         } else {
             alert('Please fill in all required fields');
@@ -44,7 +42,6 @@ const CreateBook: React.FC = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
-        console.log({ name, value });
         setFormState({ ...formState, [name]: value });
     };
 

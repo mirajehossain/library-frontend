@@ -20,7 +20,6 @@ const BookList: React.FC = () => {
     const defaultLimit: number = 10;
 
     const handleDeleteBook = (bookId: string) => {
-        console.log({ bookId });
         deleteBookMutation(bookId);
         setShowDeleteDialog(false);
     };
@@ -43,10 +42,6 @@ const BookList: React.FC = () => {
         isError,
         error,
     } = useQuery<IBook[], Error>(['books', page], () => getBooks(page, defaultLimit, searchQuery));
-
-    useEffect(() => {
-        console.log({ page });
-    }, [page]);
 
     return (
         <div className="container">

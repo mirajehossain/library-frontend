@@ -53,7 +53,6 @@ const EditBook: React.FC = () => {
         let isValid =
             formState?.title && formState?.author && formState?.publication && formState?.category;
         if (isValid) {
-            console.log({ formState });
             updateBookMutation({ bookId: bookDetails?._id, payload: formState });
         } else {
             alert('Please fill in all required fields');
@@ -62,7 +61,6 @@ const EditBook: React.FC = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
-        console.log({ name, value });
         setFormState({ ...formState, [name]: value });
     };
 
